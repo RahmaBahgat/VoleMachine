@@ -10,28 +10,28 @@
 
 class CPU {
 private:
-    int programCounter;               // Points to the current memory cell address for fetching instructions
-    std::string instructionRegister;  // Holds the fetched instruction
-    Register reg;                     // CPU registers
-    ALU alu;                          // Arithmetic Logic Unit for operations
-    CU cu;                            // Control Unit for handling instructions
+    int programCounter;                
+    std::string instructionRegister;    
+    Register reg;                      
+    ALU alu;                           
+    CU cu;                             
 
 public:
-    CPU();
+    CPU();// Constructor to initialize the CPU
 
-    // Fetches the instruction from memory based on the current program counter.
+    // Fetches the next instruction from memory based on the program counter
     void fetch(Memory& memory);
 
-    // Decodes the instruction in the instruction register into an opcode and operands.
+    // Decodes the fetched instruction into an opcode and its operands
     std::pair<std::string, std::string> decode();
 
-    // Executes the instruction by calling the appropriate function from CU or ALU.
+    // Executes the instruction using the appropriate methods from CU or ALU
     int execute(const std::string& opcode, const std::string& operands, Memory& memory);
 
-    // Runs a single fetch-decode-execute cycle and advances program counter.
+    // Runs one complete cycle: fetch, decode, and execute the instruction
     int runNextStep(Memory& memory);
 
-    // Accessor for the registers for checking state.
+    // Returns the current state of the registers
     const Register& getRegister() const;
 };
 
