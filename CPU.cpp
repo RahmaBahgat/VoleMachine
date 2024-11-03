@@ -18,38 +18,38 @@ std::pair<std::string, std::string> CPU::decode() {
 }
 
 int CPU::execute(const std::string& opcode, const std::string& operands, Memory& memory) {
-    int op = std::stoi(opcode, nullptr, 16);  // Convert opcode to integer
-    int regR = std::stoi(operands.substr(0, 1), nullptr, 16);  // Register R
+    int op = alu.hexToDec(opcode);  // Use your hexToDec function for opcode conversion
+    int regR = alu.hexToDec(operands.substr(0, 1));  // Convert register R from hex to int
     int regS, regT, address;
 
     switch (op) {
         case 0x1:  // LOAD RXY: Load value from memory at address XY into register R
-            address = std::stoi(operands.substr(1, 2), nullptr, 16);
+            address = alu.hexToDec(operands.substr(1, 2));  // Convert address from hex to int
             cu.load(regR, address, reg, memory);
             break;
         case 0x2:  // LOAD immediate RXY: Load immediate value XY directly into register R
             cu.loadImmediate(regR, operands.substr(1, 2), reg);
             break;
         case 0x3:  // STORE RXY: Store value in register R to memory at address XY
-            address = std::stoi(operands.substr(1, 2), nullptr, 16);
+            address = alu.hexToDec(operands.substr(1, 2));  // Convert address from hex to int
             cu.store(regR, address, reg, memory);
             break;
         case 0x4:  // MOVE 0RS: Move value from register R to register S
-            regS = std::stoi(operands.substr(1, 1), nullptr, 16);
+            regS = alu.hexToDec(operands.substr(1, 1));  // Convert register S from hex to int
             cu.move(regR, regS, reg);
             break;
         case 0x5:  // ADD RST: Integer addition of registers S and T, store result in R
-            regS = std::stoi(operands.substr(1, 1), nullptr, 16);
-            regT = std::stoi(operands.substr(2, 1), nullptr, 16);
+            regS = alu.hexToDec(operands.substr(1, 1));  // Convert register S from hex to int
+            regT = alu.hexToDec(operands.substr(2, 1));  // Convert register T from hex to int
             alu.add(regR, regS, regT, reg);
             break;
         case 0x6:  // Floating-point addition of registers S and T, store result in R
-            regS = std::stoi(operands.substr(1, 1), nullptr, 16);
-            regT = std::stoi(operands.substr(2, 1), nullptr, 16);
+            regS = alu.hexToDec(operands.substr(1, 1));  // Convert register S from hex to int
+            regT = alu.hexToDec(operands.substr(2, 1));  // Convert register T from hex to int
             alu.addFloatingPoint(regR, regS, regT, reg);
             break;
         case 0xB:  // JUMP RXY: Jump to address XY if register R equals register 0
-            address = std::stoi(operands.substr(1, 2), nullptr, 16);
+            address = alu.hexToDec(operands.substr(1, 2));  // Convert address from hex to int
             if (reg.getCell(regR) == reg.getCell(0)) {
                 programCounter = address;
                 return 0;  // Return to indicate jump occurred
@@ -63,14 +63,4 @@ int CPU::execute(const std::string& opcode, const std::string& operands, Memory&
             return -1;  // Return error for unknown opcode
     }
     return 0;
-}
-
-int CPU::runNextStep(Memory& memory) {
-    fetch(memory);  // Fetch instruction
-    auto [opcode, operands] = decode();  // Decode instruction
-    return execute(opcode, operands, memory);  // Execute instruction
-}
-
-const Register& CPU::getRegister() const {
-    return reg;
 }
