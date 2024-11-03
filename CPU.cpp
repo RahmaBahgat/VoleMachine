@@ -24,32 +24,32 @@ int CPU::execute(const std::string& opcode, const std::string& operands, Memory&
 
     switch (op) {
         case 0x1:  // LOAD RXY: Load value from memory at address XY into register R
-            address = alu.hexToDec(operands.substr(1, 2));  // Convert address from hex to int
+            address = alu.hexToDec(operands.substr(1, 2));
             cu.load(regR, address, reg, memory);
             break;
         case 0x2:  // LOAD immediate RXY: Load immediate value XY directly into register R
             cu.loadImmediate(regR, operands.substr(1, 2), reg);
             break;
         case 0x3:  // STORE RXY: Store value in register R to memory at address XY
-            address = alu.hexToDec(operands.substr(1, 2));  // Convert address from hex to int
+            address = alu.hexToDec(operands.substr(1, 2));
             cu.store(regR, address, reg, memory);
             break;
         case 0x4:  // MOVE 0RS: Move value from register R to register S
-            regS = alu.hexToDec(operands.substr(1, 1));  // Convert register S from hex to int
+            regS = alu.hexToDec(operands.substr(1, 1));
             cu.move(regR, regS, reg);
             break;
         case 0x5:  // ADD RST: Integer addition of registers S and T, store result in R
-            regS = alu.hexToDec(operands.substr(1, 1));  // Convert register S from hex to int
-            regT = alu.hexToDec(operands.substr(2, 1));  // Convert register T from hex to int
+            regS = alu.hexToDec(operands.substr(1, 1));
+            regT = alu.hexToDec(operands.substr(2, 1));
             alu.add(regR, regS, regT, reg);
             break;
         case 0x6:  // Floating-point addition of registers S and T, store result in R
-            regS = alu.hexToDec(operands.substr(1, 1));  // Convert register S from hex to int
-            regT = alu.hexToDec(operands.substr(2, 1));  // Convert register T from hex to int
+            regS = alu.hexToDec(operands.substr(1, 1));
+            regT = alu.hexToDec(operands.substr(2, 1));
             alu.addFloatingPoint(regR, regS, regT, reg);
             break;
         case 0xB:  // JUMP RXY: Jump to address XY if register R equals register 0
-            address = alu.hexToDec(operands.substr(1, 2));  // Convert address from hex to int
+            address = alu.hexToDec(operands.substr(1, 2));
             if (reg.getCell(regR) == reg.getCell(0)) {
                 programCounter = address;
                 return 0;  // Return to indicate jump occurred
