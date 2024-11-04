@@ -16,6 +16,7 @@ public:
     void inputInstruction();
     void runProgram();
     char inputChoice();
+    void OutputMachineState();
 };
 
 #endif
