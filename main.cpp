@@ -12,12 +12,14 @@ int main() {
         switch (choice) {
             case '1':
                 ui.inputFileName();
+                ui.runProgram();
                 break;
             case '2':
                 ui.inputInstruction();
+                ui.runProgram();
                 break;
             case '3':
-                ui.runProgram();
+                ui.OutputMachineState();
                 break;
             case '4':
                 std::cout << "Exiting the simulator." << std::endl;
