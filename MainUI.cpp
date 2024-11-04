@@ -8,7 +8,7 @@ void MainUI::displayMenu() {
     std::cout << "Welcome to the Vole Machine Simulator" << std::endl;
     std::cout << "1. Enter a program file" << std::endl;
     std::cout << "2. Enter instructions manually" << std::endl;
-    std::cout << "3. Run the program" << std::endl;
+    std::cout << "3. Output Machine State" << std::endl;
     std::cout << "4. Exit" << std::endl;
     std::cout << "Choose an option: ";
 }
@@ -34,7 +34,7 @@ void MainUI::inputInstruction() {
     std::string program;
     while (true) {
         std::cin >> instruction;
-        if (instruction == "END") break;
+        if (instruction == "C000") break;
         program += instruction + "\n";
     }
     machine.loadProgramFile(program);
@@ -45,7 +45,6 @@ void MainUI::runProgram() {
     int result;
     do {
         result = machine.executeNextInstruction();
-        machine.outputState();
     } while (result != -1);  // -1 indicates halt
     std::cout << "Program execution completed." << std::endl;
 }
@@ -54,4 +53,8 @@ char MainUI::inputChoice() {
     char choice;
     std::cin >> choice;
     return choice;
+}
+
+void MainUI::OutputMachineState() {
+    return machine.outputState();
 }
