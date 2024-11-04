@@ -64,3 +64,14 @@ int CPU::execute(const std::string& opcode, const std::string& operands, Memory&
     }
     return 0;
 }
+// Runs one complete cycle: fetch, decode, and execute the instruction
+int CPU::runNextStep(Memory& memory) {
+    fetch(memory);
+    auto [opcode, operands] = decode();
+    return execute(opcode, operands, memory);
+}
+
+// Returns the current state of the registers
+const Register& CPU::getRegister() const {
+    return reg;
+}
