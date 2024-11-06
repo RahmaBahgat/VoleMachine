@@ -1,6 +1,5 @@
 #include "ALU.h"
 #include <sstream>
-#include <iomanip>
 #include <string>
 #include <cmath>
 #include <iostream>
@@ -9,7 +8,7 @@
 
 using namespace std;
 
-int ALU::hexToDec(const std::string& hexStr) {
+int ALU::hexToDec(const string& hexStr) {
     int value = 0;
     int base = 1;
 
@@ -31,7 +30,7 @@ int ALU::hexToDec(const std::string& hexStr) {
             decimalDigit = hexDigit - 'a' + 10;
         }
         else{
-            throw std::invalid_argument("Invalid hexadecimal character");
+            throw invalid_argument("Invalid hexadecimal character");
         }
         value += decimalDigit * base;
         base *= 16;
@@ -40,7 +39,7 @@ int ALU::hexToDec(const std::string& hexStr) {
 }
 
 
-std::string ALU::decToHex(int decimal) {
+string ALU::decToHex(int decimal) {
     string hex = "";
     while (decimal > 0) {
         int remainder = decimal % 16;//get reminder
@@ -55,9 +54,9 @@ std::string ALU::decToHex(int decimal) {
     return hex;
 }
 
-bool ALU::isValid(const std::string& hexStr) {
-    std::stringstream ss;
-    ss << std::hex << hexStr;
+bool ALU::isValid(const string& hexStr) {
+    stringstream ss;
+    ss << hex << hexStr;
     int value;
     return (ss >> value) ? true : false;
 }
@@ -91,7 +90,7 @@ void ALU::OR(int regR, int regS, int regT, Register& reg){
     }
 
     // Convert the binary result back to hex
-    int resultDecimal = std::stoi(resultBinary, nullptr, 2);
+    int resultDecimal = stoi(resultBinary, nullptr, 2);
     string resultHex = decToHex(resultDecimal);
 
     reg.setCell(regR, resultHex);
@@ -112,7 +111,7 @@ void ALU::AND(int regR, int regS, int regT, Register& reg) {
     }
 
     //Convert the binary result back to hex
-    int resultDecimal = std::stoi(resultBinary, nullptr, 2); // Convert binary to decimal
+    int resultDecimal = stoi(resultBinary, nullptr, 2); // Convert binary to decimal
     string resultHex = decToHex(resultDecimal);              // Convert decimal to hex
 
     reg.setCell(regR, resultHex);
@@ -133,7 +132,7 @@ void ALU::XOR(int regR, int regS, int regT, Register& reg) {
     }
 
     //Convert the binary result back to hex
-    int resultDecimal = std::stoi(resultBinary, nullptr, 2); // Convert binary to decimal
+    int resultDecimal = stoi(resultBinary, nullptr, 2); // Convert binary to decimal
     string resultHex = decToHex(resultDecimal);              // Convert decimal to hex
 
     reg.setCell(regR, resultHex);
@@ -222,16 +221,16 @@ void ALU::addFloatingPoint(int regR, int regS, int regT, Register& reg) {
     reg.setCell(regR , decToHex(result) );
 }
 void ALU::Rotate(int regR, int steps, Register& reg) {
-    int value = std::stoi(reg.getCell(regR), nullptr, 16);
+    int value = stoi(reg.getCell(regR), nullptr, 16);
 
     //Ensure steps are within the 8-bit limit
-    steps = steps % 8;  
-    
+    steps = steps % 8;
+
     //Perform the cyclic right rotation
     int rotatedValue = (value >> steps) | (value << (8 - steps)) & 0xFF;
 
     //Convert the rotated value back to hex
-    std::string rotatedHex = decToHex(rotatedValue);
-    
+    string rotatedHex = decToHex(rotatedValue);
+
     reg.setCell(regR, rotatedHex);
 }
