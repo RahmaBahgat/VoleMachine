@@ -10,16 +10,14 @@ class ALU {
 public:
     int hexToDec(const std::string& hex);
     std::string decToHex(int dec);
-
     static bool isValid(const std::string& hexStr);
-    // Add two's complement values from two registers and store the result in the destination register
     void add(int regR, int regS, int regT, Register& reg);
-
-    // Add floating-pstd::stringalues from two registers and store the result in the destination register
     void addFloatingPoint(int idx1, int idx2, int resultIdx, Register& reg);
-
-    // Helper functions for hexadecimal to decimal conversion and vice versa
-
+    void OR(int regR, int regS, int regT, Register& reg);
+    void AND(int regR, int regS, int regT, Register& reg);
+    void XOR(int regR, int regS, int regT, Register& reg);
+    void Rotate(int regR, int regS, Register& reg);
+    string hexToBinary(const string& hex);
 };
 
 #endif
