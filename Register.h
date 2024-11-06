@@ -4,15 +4,17 @@
 #include <string>
 #include <vector>
 
+using namespace std;
+
 class Register {
 private:
-    std::vector<std::string> memory;
+    vector<string> memory;
     int size;
 
 public:
     Register(int size = 16);
-    std::string getCell(int address) const;
-    void setCell(int address, const std::string& val);
+    string getCell(int address) const;
+    void setCell(int address, const string& val);
 };
 
 #endif
