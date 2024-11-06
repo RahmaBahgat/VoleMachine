@@ -10,8 +10,6 @@ public:
     void loadImmediate(int idxReg, const std::string& val, Register& reg);
     void store(int idxReg, int idxMem, Register& reg, Memory& mem);
     void move(int idxReg1, int idxReg2, Register& reg);
-    int jump(int idxReg, int idxMem, Register& reg, int PC);
-    int halt();
 };
 
 #endif
