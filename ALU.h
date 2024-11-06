@@ -9,7 +9,7 @@ using namespace std;
 class ALU {
 public:
     int hexToDec(const std::string& hex);
-    std::string decToHex(int dec);
+    string decToHex(int dec);
     static bool isValid(const std::string& hexStr);
     void add(int regR, int regS, int regT, Register& reg);
     void addFloatingPoint(int idx1, int idx2, int resultIdx, Register& reg);
