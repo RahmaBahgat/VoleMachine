@@ -16,12 +16,18 @@ int main() {
                 break;
             case '2':
                 ui.inputInstruction();
-                ui.runProgram();
                 break;
             case '3':
+                ui.runProgram();
                 ui.OutputMachineState();
                 break;
             case '4':
+                ui.runProgram();
+                break;
+            case '5':
+                ui.OutputMachineState();
+                break;
+            case '6':
                 std::cout << "Exiting the simulator." << std::endl;
                 break;
             default:
