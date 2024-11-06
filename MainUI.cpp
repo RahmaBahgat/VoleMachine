@@ -2,43 +2,45 @@
 #include <iostream>
 #include <fstream>
 
-MainUI::MainUI() : enterFileOrInstructions(false) {}
+using namespace std;
+
+MainUI::MainUI() {}
 
 void MainUI::displayMenu() {
-    std::cout << "Welcome to the Vole Machine Simulator" << std::endl;
-    std::cout << "1. Enter a program file" << std::endl;
-    std::cout << "2. Enter instructions manually" << std::endl;
-    std::cout << "3. Output Machine State" << std::endl;
-    std::cout << "4. Exit" << std::endl;
-    std::cout << "Choose an option: ";
+    cout << "Welcome to the Vole Machine Simulator" << endl;
+    cout << "1. Enter a program file" << endl;
+    cout << "2. Enter instructions manually" << endl;
+    cout << "3. Output Machine State" << endl;
+    cout << "4. Exit" << endl;
+    cout << "Choose an option: ";
 }
 
 void MainUI::inputFileName() {
-    std::string fileName;
-    std::cout << "Enter the program file name: ";
-    std::cin >> fileName;
+    string fileName;
+    cout << "Enter the program file name: ";
+    cin >> fileName;
 
-    std::ifstream file(fileName);
+    ifstream file(fileName);
     if (file) {
-        std::string program((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+        string program((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
         machine.loadProgramFile(program);
-        std::cout << "Program loaded successfully from file." << std::endl;
+        cout << "Program loaded successfully from file." << endl;
     } else {
-        std::cout << "Failed to open file." << std::endl;
+        cout << "Failed to open file." << endl;
     }
 }
 
 void MainUI::inputInstruction() {
-    std::string instruction;
-    std::cout << "Enter the program instructions (type 'END' to finish):" << std::endl;
-    std::string program;
+    string instruction;
+    cout << "Enter the program instructions (type 'C000' to finish):" << endl;
+    string program;
     while (true) {
-        std::cin >> instruction;
+        cin >> instruction;
         if (instruction == "C000") break;
         program += instruction + "\n";
     }
     machine.loadProgramFile(program);
-    std::cout << "Program loaded successfully from manual input." << std::endl;
+    cout << "Program loaded successfully from manual input." << endl;
 }
 
 void MainUI::runProgram() {
@@ -46,12 +48,12 @@ void MainUI::runProgram() {
     do {
         result = machine.executeNextInstruction();
     } while (result != -1);  // -1 indicates halt
-    std::cout << "Program execution completed." << std::endl;
+    cout << "Program execution completed." << endl;
 }
 
 char MainUI::inputChoice() {
     char choice;
-    std::cin >> choice;
+    cin >> choice;
     return choice;
 }
 
