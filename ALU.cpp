@@ -1,5 +1,8 @@
+//
+// Created by habeb on 11/6/2024.
+//
+
 #include "ALU.h"
-#include <sstream>
 #include <string>
 #include <cmath>
 #include <iostream>
@@ -7,46 +10,54 @@
 #include <algorithm>
 
 using namespace std;
-
+int ALU::BinaryToHex(const std::string& binary) {
+    int hexValue = 0;
+    int length = binary.length();
+    // Process the binary string in chunks of 4 bits
+    for (int i = 0; i < length; i += 4) {
+        // Get 4 bits, if not enough bits left, pad with zeros
+        string fourBits = binary.substr(i, 4);
+        if (fourBits.length() < 4) {
+            fourBits = std::string(4 - fourBits.length(), '0') + fourBits; // pad with leading zeros
+        }
+        // Convert 4-bit binary string to decimal
+        int decimalValue = std::bitset<4>(fourBits).to_ulong();
+        // Update the hexValue
+        hexValue = (hexValue << 4) | decimalValue; // Shift hexValue left by 4 bits and add decimalValue
+    }
+    return hexValue; // Return the accumulated integer value
+}
 int ALU::hexToDec(const string& hexStr) {
     int value = 0;
     int base = 1;
-
     // Loop through the string from right to left
     for (int i = hexStr.size() - 1; i >= 0; i--) {
         char hexDigit = hexStr[i];  // Get the current character (hex digit)
-
         int decimalDigit;
-
         // Check if the digit is a number
         if (hexDigit >= '0' && hexDigit <= '9') {
             decimalDigit = hexDigit - '0';
         }
-            // Check if the digit is a letter (A-F or a-f)
+        // Check if the digit is a letter (A-F or a-f)
         else if (hexDigit >= 'A' && hexDigit <= 'F') {
             decimalDigit = hexDigit - 'A' + 10;
         }
         else if (hexDigit >= 'a' && hexDigit <= 'f') {
             decimalDigit = hexDigit - 'a' + 10;
         }
-        else{
-            throw invalid_argument("Invalid hexadecimal character");
-        }
         value += decimalDigit * base;
         base *= 16;
     }
     return value;
 }
-
-
 string ALU::decToHex(int decimal) {
     string hex = "";
     while (decimal > 0) {
         int remainder = decimal % 16;//get reminder
         if (remainder < 10) {// cheek it can  be the same number in hexadecimal
-            hex += (remainder + 48); // Convert to character to be stored in string
+            hex += (remainder + '0'); // Convert to character
         }else { // it needs to convert to letter
-            hex += (remainder - 10 + 'A'); // Convert to character A-F by -10(to be sutibale number from 0 to 5 ) + 65(to convert it to letter)
+            hex += (remainder - 10 + 'A'); // Convert to character A-F by -10(to be suitable number from 0 to 5 ) + 65(to convert it to letter)
         }
         decimal /= 16;
     }
@@ -54,11 +65,13 @@ string ALU::decToHex(int decimal) {
     return hex;
 }
 
-bool ALU::isValid(const string& hexStr) {
-    stringstream ss;
-    ss << hex << hexStr;
-    int value;
-    return (ss >> value) ? true : false;
+bool ALU::isValid(const string& hexStr) {//cheek valid hexa decimal
+    for (char c : hexStr) {
+        if (!((c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f'))) {
+            return false;
+        }
+    }
+    return true;
 }
 
 string ALU::hexToBinary(const string& hex){
@@ -66,11 +79,11 @@ string ALU::hexToBinary(const string& hex){
     for(int i = 0 ; i < hex.size() ; i++){
         int dec  = 0 ;
         if(hex[i] >='0' && hex[i] <= '9'){
-            dec = hex[i] - '0';
+            dec = hex[i] - '0';//convert to number
         }else{
-            dec = hex[i] -'A' + 10;
+            dec = hex[i] -'A' + 10;//convert to numbers from 10 to 15
         }
-        binary += bitset<4>(dec).to_string();
+        binary += bitset<4>(dec).to_string();//set in 4 bits
     }
     return binary;
 }
@@ -78,7 +91,6 @@ string ALU::hexToBinary(const string& hex){
 void ALU::OR(int regR, int regS, int regT, Register& reg){
     string b1 = hexToBinary(reg.getCell(regS));
     string b2 = hexToBinary(reg.getCell(regT));
-
     // Perform bitwise OR operation on each bit
     string resultBinary = "";
     for (int i = 0; i < b1.size(); i++) {
@@ -88,9 +100,8 @@ void ALU::OR(int regR, int regS, int regT, Register& reg){
             resultBinary += '0';
         }
     }
-
     // Convert the binary result back to hex
-    int resultDecimal = stoi(resultBinary, nullptr, 2);
+    int resultDecimal = BinaryToHex(resultBinary);
     string resultHex = decToHex(resultDecimal);
 
     reg.setCell(regR, resultHex);
@@ -111,8 +122,8 @@ void ALU::AND(int regR, int regS, int regT, Register& reg) {
     }
 
     //Convert the binary result back to hex
-    int resultDecimal = stoi(resultBinary, nullptr, 2); // Convert binary to decimal
-    string resultHex = decToHex(resultDecimal);              // Convert decimal to hex
+    int resultDecimal = BinaryToHex(resultBinary);
+    string resultHex = decToHex(resultDecimal);
 
     reg.setCell(regR, resultHex);
 }
@@ -131,9 +142,9 @@ void ALU::XOR(int regR, int regS, int regT, Register& reg) {
         }
     }
 
-    //Convert the binary result back to hex
-    int resultDecimal = stoi(resultBinary, nullptr, 2); // Convert binary to decimal
-    string resultHex = decToHex(resultDecimal);              // Convert decimal to hex
+
+    int resultDecimal =  BinaryToHex(resultBinary);
+    string resultHex = decToHex(resultDecimal);
 
     reg.setCell(regR, resultHex);
 }
@@ -221,7 +232,7 @@ void ALU::addFloatingPoint(int regR, int regS, int regT, Register& reg) {
     reg.setCell(regR , decToHex(result) );
 }
 void ALU::Rotate(int regR, int steps, Register& reg) {
-    int value = stoi(reg.getCell(regR), nullptr, 16);
+    int value = hexToDec(reg.getCell(regR));
 
     //Ensure steps are within the 8-bit limit
     steps = steps % 8;
@@ -232,5 +243,5 @@ void ALU::Rotate(int regR, int steps, Register& reg) {
     //Convert the rotated value back to hex
     string rotatedHex = decToHex(rotatedValue);
 
-    reg.setCell(regR, rotatedHex);
+    reg.setCell(regR,rotatedHex);
 }
