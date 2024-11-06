@@ -4,6 +4,8 @@
 #include "CPU.h"
 #include "Memory.h"
 
+using namespace std;
+
 class Machine {
 private:
     CPU processor;
@@ -11,9 +13,10 @@ private:
 
 public:
     Machine();
-    void loadProgramFile(const std::string& program);
+    void loadProgramFile(const string& program);
     void outputState() const;
     int executeNextInstruction();
+
 };
 
 #endif
