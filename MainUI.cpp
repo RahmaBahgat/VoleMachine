@@ -10,8 +10,10 @@ void MainUI::displayMenu() {
     cout << "Welcome to the Vole Machine Simulator" << endl;
     cout << "1. Enter a program file" << endl;
     cout << "2. Enter instructions manually" << endl;
-    cout << "3. Output Machine State" << endl;
-    cout << "4. Exit" << endl;
+    cout << "3. Run the program and Output Machine State" << endl;
+    cout << "4. Run the program" << endl;
+    cout << "5. Output Machine State" << endl;
+    cout << "6. Exit" << endl;
     cout << "Choose an option: ";
 }
 
