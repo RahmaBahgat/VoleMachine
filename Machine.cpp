@@ -1,6 +1,7 @@
 #include "Machine.h"
 #include <iostream>
 #include <iomanip>
+#include <cctype>
 
 using namespace std;
 
@@ -25,23 +26,64 @@ void Machine::loadProgramFile(const string& program) {
     }
 }
 
+bool Machine::isASCII(const string& str) const {
+    for (char c : str) {
+        if (!isprint(c)) return false;  // Ensure all characters are printable ASCII
+    }
+    return true;
+}
+
+bool Machine::isHex(const string& str) const {
+    for (char c : str) {
+        if (!isxdigit(c)) return false;  // Non-hex character found
+    }
+    return true;
+}
+
 void Machine::outputState() const {
     cout << "\n--- Machine State ---" << endl;
 
-    // Output Register State
+    // Print Register State
     cout << "Registers:" << endl;
     for (int i = 0; i < 16; ++i) {
-        cout << "R" << hex << i << ": " << processor.getRegister().getCell(i) << " ";
-        if ((i + 1) % 8 == 0) cout << endl;  // Print 8 registers per line
+        string regValue = processor.getRegister().getCell(i);
+
+        // Detect type and display accordingly
+        if (isASCII(regValue)) {
+            cout << "R" << hex << i << ": HEX = '" << regValue << "', ASCII = ";
+            for (char c : regValue) {
+                cout << dec << int(c) << " ";  // Print ASCII code in decimal
+            }
+            cout << endl;
+        } else if (isHex(regValue)) {
+            cout << "R" << hex << i << ": HEX = " << regValue << endl;
+        } else {
+            cout << "R" << hex << i << ": UNRECOGNIZED FORMAT" << endl;
+        }
+
+        if ((i + 1) % 8 == 0) cout << endl;
     }
 
-    // Output Memory State
+    // Print Memory State
     cout << "\nMemory:" << endl;
-    for (int i = 0; i < 256; ++i) {
-        cout << setw(2) << setfill('0') << hex << i << ": " << memory.getCell(i) << " ";
-        if ((i + 1) % 8 == 0) cout << endl;  // Print 8 memory cells per line
+    for (int address = 0; address < 256; ++address) {
+        string memValue = memory.getCell(address);
+
+        // Detect type and display accordingly
+        if (isASCII(memValue)) {
+            cout << "Address " << hex << address << ": HEX = '" << memValue << "', ASCII = ";
+            for (char c : memValue) {
+                cout << dec << int(c) << " ";  // Print ASCII code in decimal
+            }
+            cout << endl;
+        } else if (isHex(memValue)) {
+            cout << "Address " << hex << address << ": HEX = " << memValue << endl;
+        } else {
+            cout << "Address " << hex << address << ": UNRECOGNIZED FORMAT" << endl;
+        }
+
+        if ((address + 1) % 8 == 0) cout << endl;
     }
-    cout << "---------------------\n" << endl;
 }
 
 int Machine::executeNextInstruction() {
