@@ -18,6 +18,7 @@ public:
     void XOR(int regR, int regS, int regT, Register& reg);
     void Rotate(int regR, int regS, Register& reg);
     string hexToBinary(const string& hex);
+    int BinaryToHex(const std::string& binary);
 };
 
 #endif
