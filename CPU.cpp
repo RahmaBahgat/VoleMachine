@@ -20,6 +20,10 @@ pair<string, string> CPU::decode() {
 }
 
 int CPU::execute(const string& opcode, const string& operands, Memory& memory) {
+    if (!ALU::isValid(opcode) || !ALU::isValid(operands)) {
+        cout << "Invalid hexadecimal input in instruction: " << opcode << operands << endl;
+        return -1;  // Or any error code indicating invalid input
+    }
     int op = alu.hexToDec(opcode);
     int regR = alu.hexToDec(operands.substr(0, 1));
     int regS, regT, address;
@@ -65,7 +69,7 @@ int CPU::execute(const string& opcode, const string& operands, Memory& memory) {
             regT = alu.hexToDec(operands.substr(2, 1));
             alu.XOR(regR, regS, regT, reg);
             break;
-        case 0xA: //Rotate the content in the Register R cyclically right by register T steps 
+        case 0xA: //Rotate the content in the Register R cyclically right by register T steps
             regR = alu.hexToDec(operands.substr(1, 1));
             regT = alu.hexToDec(operands.substr(2, 1));
             alu.Rotate(regR, regT, reg);
@@ -83,9 +87,9 @@ int CPU::execute(const string& opcode, const string& operands, Memory& memory) {
                 int value0 = alu.hexToDec(reg.getCell(0));
 
                 // Interpret as two's complement signed integers
-                if (valueR & 0x80) valueR -= 0x100; 
-                if (value0 & 0x80) value0 -= 0x100; 
-                
+                if (valueR & 0x80) valueR -= 0x100;
+                if (value0 & 0x80) value0 -= 0x100;
+
                 if (valueR > value0) {
                     programCounter = address;  // Jump to address XY
                     return 0;
@@ -110,4 +114,3 @@ int CPU::runNextStep(Memory& memory) {
     auto [opcode, operands] = decode();
     return execute(opcode, operands, memory);
 }
-
