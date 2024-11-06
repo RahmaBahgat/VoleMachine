@@ -7,7 +7,6 @@
 class MainUI {
 private:
     Machine machine;
-    bool enterFileOrInstructions;
 
 public:
     MainUI();
